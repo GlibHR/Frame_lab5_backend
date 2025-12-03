@@ -18,3 +18,17 @@ export const getMyNotes = async (req, res) => {
         res.status(500).json({ error: err.message });
     }
 };
+export const deleteNote = async (req, res) => {
+  try {
+    const { id } = req.params;
+    // Видаляємо нотатку ТІЛЬКИ якщо вона належить цьому юзеру
+    const deleted = await Note.findOneAndDelete({ _id: id, userId: req.user.userId });
+
+    if (!deleted) {
+      return res.status(404).json({ message: "Note not found" });
+    }
+    res.json({ message: "Deleted successfully" });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
